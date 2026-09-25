@@ -1,4 +1,6 @@
 ﻿
+using System.Text;
+
 namespace Bank_11._09_;
 
 internal class BankAccount
@@ -29,15 +31,15 @@ internal class BankAccount
         Number = s_accountNumberSeed.ToString();
         s_accountNumberSeed++;
     }
-    public void MakeDeposite ( decimal amount, DateTime date, string note)
+    public void MakeDeposite(decimal amount, DateTime date, string note)
     {
-        if(amount<=0)
+        if (amount <= 0)
         {
             throw new ArgumentOutOfRangeException
                 (nameof(amount), "Amount must be positive");
         }
 
-        var deposite = new Transaction (amount, date, note);
+        var deposite = new Transaction(amount, date, note);
         _alltransactions.Add(deposite);
     }
     public void MakeWithdrawal(decimal amount, DateTime date, string note)
@@ -47,7 +49,7 @@ internal class BankAccount
             throw new ArgumentOutOfRangeException
                 (nameof(amount), "Amount of withdrawl be positive");
         }
-        if (Balance<amount)
+        if (Balance < amount)
         {
             throw new InvalidOperationException
                 ("Not sufficient money for this withdrawal");
@@ -56,4 +58,19 @@ internal class BankAccount
         _alltransactions.Add(withdrowal);
     }
 
+    public string GetAccountHistory()
+    {
+        var report = new StringBuilder();
+
+        decimal balance = 0;
+        report.AppendLine("Date\t\tAmount\tBalance\tNote");
+        foreach (var item in _alltransactions)
+        {
+            balance += item.Amount;
+            report.AppendLine($"" =
+                $"{item.Date.ToShortDateString()}\t" +
+                $"{item.Amount}\t{balance}\t{item.Note}");
+        }
+        return report.ToString();
+    }
 }
