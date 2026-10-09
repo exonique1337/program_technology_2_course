@@ -81,7 +81,7 @@ public class BankAccount
         {
             // default - содержит значение по умолчаю,
             // так как тип возвращаемого значения - ссылочный, то 
-            // default = null
+            // default = null 
             return default; // == return null;
         }
     }
