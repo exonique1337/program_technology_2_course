@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            // Полиморфизм: список базового типа Animal,
+            // Полиморфизм список базового типа Animal,
             // внутри лежат объекты-наследники. Компилятор это разрешает.
             List<Animal> animals = new List<Animal>
             {
@@ -33,7 +33,7 @@
                     Console.WriteLine($"{animal.Name} cannot fly.");
                 }
 
-                Console.WriteLine("----------------------------------------");
+                Console.WriteLine("--------------------------------_-------");
             }
         }
     }
