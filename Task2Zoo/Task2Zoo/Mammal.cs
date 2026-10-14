@@ -1,6 +1,6 @@
 ﻿namespace Zoo;
 
-/// <summary>Млекопитающее</summary>
+/// <summary>Млекопитающее </summary>
 public class Mammal : Animal
 {
     public string FurColor { get; set; } = string.Empty;
@@ -18,7 +18,7 @@ public class Mammal : Animal
         FurColor = "unknown";
     }
 
-    // override — предоставляем свою реализацию абстрактного метода
+    // предоставляем свою реализацию абстрактного метода
     public override void MakeSound()
     {
         Console.WriteLine($"{Name} says: meow.");

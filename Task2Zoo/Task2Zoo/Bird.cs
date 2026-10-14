@@ -1,6 +1,6 @@
 ﻿namespace Zoo;
 
-/// <summary>Птица — умеет летать, поэтому реализует IFlyable</summary>
+/// <summary>Птица умеет летать, поэтому реализует IFlyable</summary>
 public class Bird : Animal, IFlyable
 {
     public int WingSpan { get; set; }

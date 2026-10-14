@@ -1,6 +1,6 @@
 ﻿namespace Zoo;
 
-/// <summary>Рептилия</summary>
+/// <summary>Рептилия </summary>
 public class Reptile : Animal
 {
     public bool IsVenomous { get; set; }
