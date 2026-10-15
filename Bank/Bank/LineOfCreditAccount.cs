@@ -15,14 +15,14 @@ public class LineOfCreditAccount : BankAccount
         : base(name, initialBalance, -creditLimit) { }
 
     /// <summary>
-    /// Начисляет 7% на отрицательный баланс (проценты за пользование кредитом).
+    /// Начисляет 7% на отрицательный баланс и записывает операцию в аудит.
     /// </summary>
     public override void PerformMonthAndTransactions()
     {
         if (Balance < 0)
         {
             decimal interest = -Balance * 0.07m;
-            MakeWithdrawal(interest, DateTime.UtcNow, "Charge monthly interest");
+            MakeWithdrawal(interest, DateTime.UtcNow, "Charge monthly interest", "Interest");
         }
     }
 

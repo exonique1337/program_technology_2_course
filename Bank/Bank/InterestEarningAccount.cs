@@ -14,14 +14,14 @@ public class InterestEarningAccount : BankAccount
         : base(name, initialBalance) { }
 
     /// <summary>
-    /// Начисляет 2% на остаток, если баланс превышает 500.
+    /// Начисляет 2% на остаток при балансе свыше 500 и записывает операцию в аудит.
     /// </summary>
     public override void PerformMonthAndTransactions()
     {
         if (Balance > 500m)
         {
             decimal interest = Balance * 0.02m;
-            MakeDeposit(interest, DateTime.UtcNow, "Apply month interest");
+            MakeDeposit(interest, DateTime.UtcNow, "Apply month interest", "Interest");
         }
     }
 }

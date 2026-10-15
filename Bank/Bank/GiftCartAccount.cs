@@ -18,12 +18,12 @@ public class GiftCardAccount : BankAccount
         => _monthlyDeposit = monthlyDeposit;
 
     /// <summary>
-    /// Пополняет счёт на сумму ежемесячного взноса, если она задана.
+    /// Пополняет счёт на сумму ежемесячного взноса и записывает операцию в аудит.
     /// </summary>
     public override void PerformMonthAndTransactions()
     {
         if (_monthlyDeposit != 0)
-            MakeDeposit(_monthlyDeposit, DateTime.UtcNow, "Add monthly deposit");
+            MakeDeposit(_monthlyDeposit, DateTime.UtcNow, "Add monthly deposit", "Deposit");
     }
 
     /// <summary>

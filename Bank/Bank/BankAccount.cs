@@ -67,32 +67,36 @@ public class BankAccount
     }
 
     /// <summary>
-    /// Пополняет счёт на указанную сумму.
+    /// Пополняет счёт и записывает операцию в журнал аудита.
     /// </summary>
     /// <param name="amount">Сумма пополнения. Должна быть положительной.</param>
     /// <param name="date">Дата операции.</param>
     /// <param name="note">Комментарий к операции.</param>
+    /// <param name="type">Тип операции для аудита. По умолчанию "Deposit".</param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Бросается, если <paramref name="amount"/> меньше или равен нулю.
     /// </exception>
-    public void MakeDeposit(decimal amount, DateTime date, string note)
+    public void MakeDeposit(decimal amount, DateTime date, string note, string type = "Deposit")
     {
         if (amount <= 0)
             throw new ArgumentOutOfRangeException(nameof(amount), "Amount of deposit must be positive");
 
         var deposit = new Transaction(amount, date, note);
         _allTransactions.Add(deposit);
+        AuditLogs.Add(Number, type, amount, date);
     }
 
     /// <summary>
-    /// Снимает деньги со счёта. Проверяет минимальный баланс и начисляет VIP-кэшбэк.
+    /// Снимает деньги со счёта, проверяет минимальный баланс,
+    /// начисляет VIP-кэшбэк и записывает операцию в журнал аудита.
     /// </summary>
     /// <param name="amount">Сумма снятия. Должна быть положительной.</param>
     /// <param name="date">Дата операции.</param>
     /// <param name="note">Комментарий.</param>
+    /// <param name="type">Тип операции для аудита. По умолчанию "Withdrawal".</param>
     /// <exception cref="ArgumentOutOfRangeException">Если сумма ≤ 0.</exception>
     /// <exception cref="InvalidOperationException">Если недостаточно средств.</exception>
-    public void MakeWithdrawal(decimal amount, DateTime date, string note)
+    public void MakeWithdrawal(decimal amount, DateTime date, string note, string type = "Withdrawal")
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
 
@@ -101,12 +105,13 @@ public class BankAccount
         Transaction? withdrawal = new(-amount, date, note);
 
         _allTransactions.Add(withdrawal);
+        AuditLogs.Add(Number, type, amount, date);
 
         if (overdraftTransaction is not null)
             _allTransactions.Add(overdraftTransaction);
 
         if (Status == ClientStatus.VIP)
-            MakeDeposit(amount * 0.05m, date, "VIP cashback");
+            MakeDeposit(amount * 0.05m, date, "VIP cashback", "Cashback");
     }
 
     /// <summary>
@@ -148,14 +153,14 @@ public class BankAccount
         {
             case ClientStatus.Regular:
                 if (Balance >= 50m)
-                    MakeWithdrawal(50m, DateTime.UtcNow, "Service fee");
+                    MakeWithdrawal(50m, DateTime.UtcNow, "Service fee", "Fee");
                 break;
 
             case ClientStatus.Premium:
                 if (Balance > 10000m)
                 {
                     decimal interest = 0.01m * (Balance - 10000m);
-                    MakeDeposit(interest, DateTime.UtcNow, "Premium interest");
+                    MakeDeposit(interest, DateTime.UtcNow, "Premium interest", "Interest");
                 }
                 break;
 
@@ -163,7 +168,7 @@ public class BankAccount
                 if (Balance > 10000m)
                 {
                     decimal interest = 0.03m * (Balance - 10000m);
-                    MakeDeposit(interest, DateTime.UtcNow, "VIP interest");
+                    MakeDeposit(interest, DateTime.UtcNow, "VIP interest", "Interest");
                 }
                 break;
         }
