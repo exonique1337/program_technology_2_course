@@ -72,6 +72,20 @@ namespace Bank
             vip.PerformMonthAndTransactions();
             vip.MakeWithdrawal(1000m, DateTime.UtcNow, "Покупка");
             Console.WriteLine($"VIP после месяца и покупки 1000: {vip.Balance} (ожидаем 20300)");
+
+            // ===== Демонстрация аудита =====
+            Console.WriteLine("=== Audit Log ===");
+            Console.WriteLine(AuditLogs.GetAuditLogs());
+
+            // ===== Демонстрация перевода =====
+            Console.WriteLine("=== Transfer ===");
+            Console.WriteLine($"До перевода: account1 = {account1.Balance}, account2 = {account2.Balance}");
+
+            TransferBetweenAccounts.Transfer(account1, account2, 50m);
+
+            Console.WriteLine($"После перевода 50: account1 = {account1.Balance}, account2 = {account2.Balance}");
+            Console.WriteLine("=== Audit Log after Transfer ===");
+            Console.WriteLine(AuditLogs.GetAuditLogs());
         }
     }
 }
