@@ -1,6 +1,4 @@
-﻿
-namespace BankAccounts.Core.Transactions;
+﻿namespace BankAccounts.Core.Transactions;
 
-
-// Простой DTO (data transfer object): сумма, дата, примечание.
-public sealed class Transaction(decimal amount, DateTime date, string note);
+// Простой DTO (data transfer object): сумма, дата, примечание
+public sealed record Transaction(decimal Amount, DateTime Date, string Note);
