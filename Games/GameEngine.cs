@@ -26,7 +26,12 @@ namespace GuessNumberGame.Games
                 Console.Write("Введи число: ");
                 string input = Console.ReadLine();
 
-                int guess = int.Parse(input);
+                if (!int.TryParse(input, out int guess))
+                {
+                    Console.WriteLine("Ошибка: введи число!");
+                    i--;
+                    continue;
+                }
 
                 if (guess == target)
                 {
