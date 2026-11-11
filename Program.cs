@@ -1,52 +1,47 @@
+using GuessNumberGame.Games;
 using GuessNumberGame.Models;
 using GuessNumberGame.Services;
 
-namespace GuessNumberGame.Games
+namespace GuessNumberGame
 {
-    public class GameEngine
+    class Program
     {
-        private INumberGenerator _generator;
-
-        // События по заданию
-        public event Action<string> OnMessage;
-        public event Action<bool, int> OnGameOver;
-
-        public GameEngine(INumberGenerator generator)
+        static void Main(string[] args)
         {
-            _generator = generator;
-        }
+            INumberGenerator rng = new RandomGenerator();
+            StatisticsService stats = new StatisticsService();
+            GameEngine game = new GameEngine(rng);
 
-        public GameResult Play(Settings settings)
-        {
-            int target = _generator.Generate(settings.Min, settings.Max);
-            OnMessage?.Invoke($"Загадал число от {settings.Min} до {settings.Max}. Попыток: {settings.Attempts}");
+            // Подписываемся на события
+            game.OnMessage += (msg) => Console.WriteLine(msg);
 
-            for (int i = 1; i <= settings.Attempts; i++)
+            game.OnGameOver += (isWin, tries) =>
             {
-                Console.Write("Введи число: ");
-                string input = Console.ReadLine();
+                var res = new GameResult { IsWin = isWin, Tries = tries };
+                stats.Save(res);
+            };
 
-                int guess = int.Parse(input);
+            while (true)
+            {
+                Console.WriteLine("\n1. Играть (Легко)");
+                Console.WriteLine("2. Играть (Средне)");
+                Console.WriteLine("3. Играть (Сложно)");
+                Console.WriteLine("4. Статистика");
+                Console.WriteLine("0. Выход");
+                Console.Write("Выбор: ");
 
-                if (guess == target)
+                string choice = Console.ReadLine();
+                if (choice == "0") break;
+
+                if (choice == "1") game.Play(new Settings(Difficulty.Easy));
+                else if (choice == "2") game.Play(new Settings(Difficulty.Medium));
+                else if (choice == "3") game.Play(new Settings(Difficulty.Hard));
+                else if (choice == "4")
                 {
-                    OnMessage?.Invoke("Ты угадал!!!");
-                    OnGameOver?.Invoke(true, i);
-                    return new GameResult { IsWin = true, Tries = i };
-                }
-                else if (guess < target)
-                {
-                    OnMessage?.Invoke("Мое число БОЛЬШЕ");
-                }
-                else
-                {
-                    OnMessage?.Invoke("Мое число МЕНЬШЕ");
+                    var data = stats.Load();
+                    Console.WriteLine($"Всего игр: {data.TotalGames}, Побед: {data.Wins}");
                 }
             }
-
-            OnMessage?.Invoke($"Ты проиграл. Я загадал {target}");
-            OnGameOver?.Invoke(false, settings.Attempts);
-            return new GameResult { IsWin = false, Tries = settings.Attempts };
         }
     }
 }
